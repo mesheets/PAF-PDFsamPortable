@@ -1,5 +1,7 @@
 name: Check for New Release
 
+# c.f. https://stackoverflow.com/a/77002385
+
 on:
   # schedule:
   #  - cron: '0 0 * * *'
