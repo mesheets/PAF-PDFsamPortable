@@ -1,0 +1,55 @@
+name: Check for New Release
+
+on:
+  # schedule:
+  #  - cron: '0 0 * * *'
+  workflow_dispatch:
+
+env:
+  REMOTE_USER: torakiki
+  REMOTE_REPO: pdfsam
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Get latest remote release
+        id: get_remote_release
+        run: |
+          # Fetch release information and extract the release tag
+          REMOTE_RELEASE_TAG=$(curl -s https://api.github.com/repos/$REMOTE_USER/$REMOTE_REPO/releases/latest | jq -r '.tag_name')
+          echo "remote_release_tag=$REMOTE_RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "latest remote release: $REMOTE_RELEASE_TAG"
+
+      - name: Get latest local release
+        id: get_local_release
+        run: |
+          # Fetch release information and extract the release tag
+          LOCAL_RELEASE_TAG=$(curl -s https://api.github.com/repos/$GITHUB_ACTION_REPOSITORY/releases/latest | jq -r '.tag_name')
+          echo "local_release_tag=$LOCAL_RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "latest local release: $LOCAL_RELEASE_TAG"
+
+      
+      - name: Compare releases
+        id: compare_releases
+        run: |
+          # Read the release info from the downloaded artifact
+          PREVIOUS_RELEASE=$(cat xyz-release-info 2> /dev/null || echo "NONE")
+          echo "previous release: $PREVIOUS_RELEASE"
+
+          # Compare the fetched release tag with the previous release tag
+          if [ "${{ steps.get_remote_release.outputs.REMOTE_RELEASE_TAG }}" != "${{ steps.get_local_release.outputs.LOCAL_RELEASE_TAG }}" ]; then
+            echo "release_changed=true" >> $GITHUB_OUTPUT
+            echo "Release changed: true"
+          else
+            echo "release_changed=false" >> $GITHUB_OUTPUT
+            echo "Release changed: false"
+          fi
+
+#      - name: Call workflow to build code
+#        if: steps.compare_release.outputs.release_changed == 'true'
+#        uses: benc-uk/workflow-dispatch@v1
+#        with:
+#          workflow: publish.yml
