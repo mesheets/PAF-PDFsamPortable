@@ -86,7 +86,7 @@ else
 
       # Publish the release and check in the updated files
       echo "Publish the new portable app release"
-      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["AppID"], $appInfoContent["Version"]["DisplayVersion"]
+      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
       gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
    }
    catch
