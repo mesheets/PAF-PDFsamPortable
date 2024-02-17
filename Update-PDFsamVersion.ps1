@@ -88,6 +88,11 @@ else
       echo "Publish the new portable app release"
       [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
       gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
+      
+      # Commit and push the updated AppInfo.ini file
+      echo "Commit and push the updated AppInfo.ini file"
+      git commit "$appInfoFile"
+      git push
    }
    catch
    {
