@@ -90,8 +90,8 @@ else
       gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
       
       # Commit and push the updated AppInfo.ini file
-      echo "Commit and push the updated AppInfo.ini file"
-      git commit "$appInfoFile"
+      echo "Commit and push the updates for $releaseName"
+      git commit -m "Updates for $releaseName" "$appInfoFile"
       git push
    }
    catch
