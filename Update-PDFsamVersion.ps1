@@ -57,7 +57,7 @@ else
       # If there are uncommitted local changes, sync will not run (but it also will not block further execution),
       # so there should not be an issue with losing work in progress that has not yet been committed (e.g. during testing).
       gh repo sync --force
-      
+
       # Download into a temporary folder the portable version of the latest release
       echo "Downloading and extracting latest release"
       [DirectoryInfo]$tempDirectory = [Directory]::CreateTempSubdirectory(".gh-")
@@ -84,15 +84,15 @@ else
       Start-Process "$PAcInstallerGeneratorPath" -ArgumentList "$PSScriptRoot" -Wait
       [FileInfo]$pafAppInstaller = [Path]::Combine(([DirectoryInfo]::new($PSScriptRoot)).Parent, $appInfoContent["Details"]["AppID"] + "_" + $appInfoContent["Version"]["DisplayVersion"].Replace(' ', '_') + ".paf.exe")
 
-      # Publish the release and check in the updated files
-      echo "Publish the new portable app release"
-      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
-      gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
-      
       # Commit and push the updated AppInfo.ini file
       echo "Commit and push the updates for $releaseName"
       git commit -m "Updates for $releaseName" "$appInfoFile"
       git push
+
+      # Publish the release and check in the updated files
+      echo "Publish the new portable app release"
+      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
+      gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
    }
    catch
    {
