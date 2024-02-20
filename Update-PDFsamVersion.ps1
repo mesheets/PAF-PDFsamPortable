@@ -1,13 +1,34 @@
 
 using namespace System.IO
 
-param([DriveInfo]$PortableDrive = "E:")
-echo "Using portable drive $PortableDrive"
+param([DirectoryInfo]$PortableAppsRoot)
+if (! $PortableAppsRoot)
+{
+   [string]$PAcPlatformProcessName = "PortableAppsPlatform"
+   [string]$PAcPlatformRelativeAppPath =  "PortableApps\\PortableApps.com\\PortableAppsPlatform.exe"
+   
+   # Check for a running instance of the PortableApps.com platform and determine the root path from that
+   [string]$PAcPlatformPath = Get-Process $PAcPlatformProcessName -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path
+   
+   if ($PAcPlatformPath) {
+      echo "Portable apps platform path: $PAcPlatformPath"
+      [DirectoryInfo]$PortableAppsRoot = [DirectoryInfo]::new($PAcPlatformPath -replace $PAcPlatformRelativeAppPath)
+   }
+   else
+   {
+      echo "No running ""$PAcPlatformProcessName"" processes found"
+      exit 1
+   }
+}
+elseif (!$PortableAppsRoot.Exists)
+{
+   echo "Provided path not found: $PortableAppsRoot"
+   exit 1
+}
+echo "Using PortableApps platform root $PortableAppsRoot"
 
-
-#[DriveInfo]$portableDrive = [DriveInfo]::new("E:")
-[FileInfo]$PAcInstallerGeneratorPath = [FileInfo]::new("$PortableDrive\\PortableApps\\PortableApps.comInstaller\\PortableApps.comInstaller.exe")
-[FileInfo]$PAcLauncherGeneratorPath = [FileInfo]::new("$PortableDrive\\PortableApps\\PortableApps.comLauncher\\PortableApps.comLauncherGenerator.exe")
+[FileInfo]$PAcInstallerGeneratorPath = [FileInfo]::new([Path]::Combine($PortableAppsRoot, "PortableApps\\PortableApps.comInstaller\\PortableApps.comInstaller.exe"))
+[FileInfo]$PAcLauncherGeneratorPath = [FileInfo]::new([Path]::Combine($PortableAppsRoot, "PortableApps\\PortableApps.comLauncher\\PortableApps.comLauncherGenerator.exe"))
 
 [string]$sourceOwnerName = "torakiki"
 [string]$sourceProjectName = "PDFsam"
