@@ -135,7 +135,7 @@ else
       echo "Update the config file for the portable app generator"
       $appInfoContent = Get-IniContent $appInfoFile
       $appInfoContent["Version"]["PackageVersion"] = $latestSourceVersionFull.ToString()
-      $appInfoContent["Version"]["DisplayVersion"] = "$latestSourceVersionFull Release 1"
+      $appInfoContent["Version"]["DisplayVersion"] = "$latestSourceVersion Release 1"
       $appInfoContent | Out-IniFile -FilePath $appInfoFile -Force -Pretty
 
       # Run the PortableApp.com packaging
