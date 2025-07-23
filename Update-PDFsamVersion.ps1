@@ -24,7 +24,7 @@ param(
 # Variable initialization
 $sourceOrgName = "torakiki"
 $sourceProjectName = "PDFsam"
-[string]$releaseArtifactFile = "pdfsam-$VERSION_STRING_PLACEHOLDER-windows.zip"
+[string]$releaseArtifactFile = "pdfsam-basic-$VERSION_STRING_PLACEHOLDER-windows-x64.zip"
 
 [string]$sourceRepo = "$sourceOrgName/$sourceProjectName"
 
@@ -145,6 +145,10 @@ else
       Start-Process "$PAcInstallerGeneratorPath" -ArgumentList "$PSScriptRoot" -Wait
       [FileInfo]$pafAppInstaller = [Path]::Combine(([DirectoryInfo]::new($PSScriptRoot)).Parent, $appInfoContent["Details"]["AppID"] + "_" + $appInfoContent["Version"]["DisplayVersion"].Replace(' ', '_') + ".paf.exe")
 
+      # Determine the release name
+      echo "Determine the release name"
+      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
+
       # Commit and push the updated AppInfo.ini file
       echo "Commit and push the updates for $releaseName"
       git commit -m "Updates for $releaseName" "$appInfoFile"
@@ -152,7 +156,6 @@ else
 
       # Publish the release and check in the updated files
       echo "Publish the new portable app release"
-      [string]$releaseName = "{0} {1}" -f $appInfoContent["Details"]["Name"], $appInfoContent["Version"]["DisplayVersion"]
       gh release create "$latestSourceVersionTag" "$pafAppInstaller" --title $releaseName --notes $releaseName
    }
    catch
