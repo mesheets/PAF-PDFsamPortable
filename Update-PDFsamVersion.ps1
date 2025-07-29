@@ -18,8 +18,8 @@ param(
 
 # Constants
 [string]$VERSION_STRING_PLACEHOLDER = "<VERSION>"
-[string]$PORTABLE_APPS_INSTALLER_GENERATOR_PATH = "PortableApps\\PortableApps.comInstaller\\PortableApps.comInstaller.exe"
 [string]$PORTABLE_APPS_LAUNCHER_GENERATOR_PATH = "PortableApps\\PortableApps.comLauncher\\PortableApps.comLauncherGenerator.exe"
+[string]$PORTABLE_APPS_INSTALLER_GENERATOR_PATH = "PortableApps\\PortableApps.comInstaller\\PortableApps.comInstaller.exe"
 
 # Variable initialization
 $sourceOrgName = "torakiki"
@@ -54,8 +54,8 @@ elseif (!$PortableAppsRoot.Exists)
 echo "Using PortableApps platform root $PortableAppsRoot"
 
 
-[FileInfo]$PAcInstallerGeneratorPath = [FileInfo]::new([Path]::Combine($PortableAppsRoot, $PORTABLE_APPS_INSTALLER_GENERATOR_PATH))
 [FileInfo]$PAcLauncherGeneratorPath = [FileInfo]::new([Path]::Combine($PortableAppsRoot, $PORTABLE_APPS_LAUNCHER_GENERATOR_PATH))
+[FileInfo]$PAcInstallerGeneratorPath = [FileInfo]::new([Path]::Combine($PortableAppsRoot, $PORTABLE_APPS_INSTALLER_GENERATOR_PATH))
 
 [DirectoryInfo]$appPackagingFolder = [DirectoryInfo]::new([Path]::Combine($PSScriptRoot, "App", $sourceProjectName))
 [FileInfo]$appInfoFile = [FileInfo]::new([Path]::Combine($PSScriptRoot, "App", "AppInfo", "AppInfo.ini"))
